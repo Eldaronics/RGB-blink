@@ -1,0 +1,43 @@
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/wdt.h>
+int value = 0;
+// 11 red,12-green,13-blue
+int main(void)
+{
+	DDRB |= 0xFF; //output
+	DDRD |= 0x00; //input
+	DDRD |= _BV(4); //input_pullup
+	while(1)
+	{
+	 if(bit_is_set(PIND,4))
+	 {
+	 _delay_ms(450); 
+	  value++;
+	  if(value>3)
+	  {
+		  value = 0;
+	  }
+	 }
+	 switch (value) {
+		 case 0:
+		 PORTB = 0x00;
+		case 1:
+		    PORTB ^=_BV(3);
+			  PORTB &=~_BV(4);
+			  PORTB &=~_BV(5);
+			 break;
+		case 2:
+		    PORTB ^=_BV(4);
+			  PORTB &=~_BV(3);
+			  PORTB &=~_BV(5);
+			 break;
+		case 3:
+		     PORTB ^= _BV(5);
+			  PORTB &=~_BV(4);
+			  PORTB &=~_BV(3);
+		     break;
+   }
+}
+}
